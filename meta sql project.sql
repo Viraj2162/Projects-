@@ -1,7 +1,7 @@
 ----- data analysis for client persona 
 
-## Task 1 :
-## Lucky Shrub need to find out what their average cost was for a product in 2022.
+
+-- finding out what their average cost was for a product in 2022.
 
 CREATE FUNCTION FindAverageCost( YearInput INT) 
 RETURNS DECIMAL(10,2) DETERMINISTIC 
@@ -9,10 +9,9 @@ RETURN (SELECT AVG(Cost) FROM Orders WHERE YEAR(Date) = YearInput);
 
  select FindAverageCost(2022) 
  
-### Task 2 :
-## Lucky Shrub need to evaluate the sales patterns for bags of artificial grass over the last three years.
+--evaluatting the sales patterns for bags of artificial grass over the last three years.
 
-#creating a stored procedure 
+--creating a stored procedure 
 
 DELIMITER // 
 CREATE PROCEDURE EvaluateProduct(IN product_id VARCHAR(10), OUT SoldItemsIn2020 INT, OUT SoldItemsIn2021 INT, OUT SoldItemsIn2022 INT)
@@ -23,16 +22,13 @@ SELECT SUM(Quantity) INTO SoldItemsIn2022 FROM Orders WHERE ProductID=product_id
 END //
 DELIMITER ;
 
-## caliing the stored procedure 
+-- caliing the stored procedure 
   
 call lucky_shrub.EvaluateProduct('p1', @SoldItemsIn2020, @SoldItemsIn2021, @SoldItemsIn2022);
 select @SoldItemsIn2020, @SoldItemsIn2021, @SoldItemsIn2022;
 
 
-### task 3 :
-# (Lucky Shrub need to automate the orders process in their database.
-# The database must insert a new record of data in response to the insertion of a new order in the Orders table. 
-# This new record of data must contain a new ID and the current date and time.
+-- automating the orders process in their database.
 
 
 CREATE TRIGGER UpdateAudit AFTER INSERT 
@@ -42,8 +38,7 @@ INSERT INTO Audit (OrderDateTime)
 VALUES (Current_timestamp) ;
 
 
-# Task 4 
-# Lucky Shrub need location data for their clients and employees.
+--finding  location data for their clients and employees.
 
 SELECT Employees.FullName, Addresses.Street, Addresses.County 
 FROM Employees INNER JOIN Addresses 
@@ -54,8 +49,7 @@ FROM Clients INNER JOIN Addresses ON Clients.AddressID = Addresses.AddressID
 ORDER BY Street;
 
 
-# Task 5
-# Lucky Shrub need to find out what quantities of wood panels they are selling.
+-- finding out what quantities of a particular prodyct they are selling.
 
 SELECT CONCAT(SUM(Cost)," ", "(2020)") AS "Total sum of P2 Product" 
 FROM Orders WHERE YEAR(Date) = 2020 AND ProductID = "P2" UNION 
@@ -65,7 +59,7 @@ UNION SELECT CONCAT(SUM(Cost)," ", "(2022)") FROM Orders
 WHERE YEAR(Date) = 2022 AND ProductID = "P2";
 
 
-#  optimize this query by recreating it as a common table expression (CTE)
+--optimizing this query by recreating it as a common table expression (CTE)
 
 WITH
 P2_Sales_2020 AS (SELECT CONCAT(SUM(Cost), " (2020)") AS "Total sum of P2 Product" 
@@ -81,8 +75,7 @@ SELECT * FROM P2_Sales_2021
 UNION
 SELECT * FROM P2_Sales_2022;
 
-# Task 6 :
-#Lucky Shrub need to find out how much revenue their top selling product generated.
+-- finding out how much revenue their top selling product generated.
 
 DELIMITER //
 CREATE PROCEDURE GetProfit(IN product_id VARCHAR(10), IN YearInput INT)
